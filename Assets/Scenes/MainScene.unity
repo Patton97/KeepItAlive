@@ -1235,6 +1235,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 0}
+      propertyPath: m_Height
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 4729165621490141690, guid: f2e6f13f7f5681b499ae7251da5609d5,
         type: 3}
       propertyPath: m_Name
@@ -1249,6 +1253,16 @@ PrefabInstance:
         type: 3}
       propertyPath: cameras.Array.data[1]
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 4729165621490141692, guid: f2e6f13f7f5681b499ae7251da5609d5,
+        type: 3}
+      propertyPath: CAMOFFSET.y
+      value: 1000
+      objectReference: {fileID: 0}
+    - target: {fileID: 4729165621490141692, guid: f2e6f13f7f5681b499ae7251da5609d5,
+        type: 3}
+      propertyPath: CAMOFFSET.z
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4729165621490141694, guid: f2e6f13f7f5681b499ae7251da5609d5,
         type: 3}
@@ -1310,6 +1324,16 @@ PrefabInstance:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 159292271}
+    - target: {fileID: 4729165621490141695, guid: f2e6f13f7f5681b499ae7251da5609d5,
+        type: 3}
+      propertyPath: m_DefaultControlScheme
+      value: Keyboard+Mouse
+      objectReference: {fileID: 0}
+    - target: {fileID: 4729165621490141695, guid: f2e6f13f7f5681b499ae7251da5609d5,
+        type: 3}
+      propertyPath: m_NotificationBehavior
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f2e6f13f7f5681b499ae7251da5609d5, type: 3}
 --- !u!1001 &7229890748056108904
@@ -1384,6 +1408,18 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2269459712205771020, guid: dbf7cd50d4e9861459862e0488dbb4e4,
+        type: 3}
+      propertyPath: prompt_DS4
+      value: 
+      objectReference: {fileID: -927199367670048503, guid: e9ea2b8d5e8539444b96d662f48b3523,
+        type: 3}
+    - target: {fileID: 2269459712205771020, guid: dbf7cd50d4e9861459862e0488dbb4e4,
+        type: 3}
+      propertyPath: prompt_KBM
+      value: 
+      objectReference: {fileID: -927199367670048503, guid: 7f83f1a88b32cda4da6297fd4e29cc7f,
+        type: 3}
     - target: {fileID: 2812360820439517428, guid: dbf7cd50d4e9861459862e0488dbb4e4,
         type: 3}
       propertyPath: m_IsTrigger
@@ -1408,6 +1444,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Enabled
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7099382839617587745, guid: dbf7cd50d4e9861459862e0488dbb4e4,
+        type: 3}
+      propertyPath: m_Constraints
+      value: 112
       objectReference: {fileID: 0}
     - target: {fileID: 8269207106098379231, guid: dbf7cd50d4e9861459862e0488dbb4e4,
         type: 3}
