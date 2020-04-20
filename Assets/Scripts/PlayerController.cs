@@ -7,30 +7,34 @@ using UnityEngine.InputSystem;
 public class PlayerController : MonoBehaviour
 {
     InputMaster controls;
-    [SerializeField] Camera[] cameras;
     Animator anim;
-    int currentCamera = 0;
     const float MOVESPEED = 1.0f;
     const float ROTSPEED = 0;
+    Camera camera;
+    CameraController cameraController;
+    bool isPushingCart;
+    public event System.Action<InputDevice> OnDeviceUpdate;
 
     Vector2 movement = Vector2.zero;
-    float rotation = 0;
-
     [SerializeField] GameObject model;
 
     // Start is called before the first frame update
     void Awake()
     {
         InitialiseControls();
-        InitialiseCameras();
+        InitialiseCamera();
         anim = GetComponentInChildren<Animator>();
+    }
+
+    void Start()
+    {
         
-        SwitchCamera();
     }
 
     // Update is called once per frame
     void Update()
     {
+        
         UpdateMovement();
     }
 
@@ -44,25 +48,32 @@ public class PlayerController : MonoBehaviour
         controls.Disable();
     }
 
-    #region Camera
-    void SwitchCamera(int newCamera = 0)
+    #region Initialisers
+    void InitialiseControls()
     {
-        cameras[currentCamera].enabled = false;
-        currentCamera = newCamera;
-        ValidateCameraSelection();
-        cameras[currentCamera].enabled = true;
-        HUDManager.Instance.UpdateCameraInfo(cameras[currentCamera].name);
+        controls = new InputMaster();
+        controls.Player.MovementDigital.performed += ctx => movement = ctx.ReadValue<Vector2>();
+        controls.Player.MovementAnalog.performed += ctx => movement = ctx.ReadValue<Vector2>();
+        controls.Player.Camera.performed += ctx => cameraController.Rotate(ctx.ReadValue<float>());
+
+        controls.Player.MovementAnalog.actionMap.actionTriggered += ctx => DeviceUpdate(ctx.control.device);
     }
-    void PreviousCamera() => SwitchCamera(currentCamera - 1);
-    void NextCamera() => SwitchCamera(currentCamera + 1);
+    
+
+    void InitialiseCamera()
+    {
+        if (camera == null) { camera = Camera.main; }
+        if (cameraController == null) { cameraController = camera.GetComponent<CameraController>(); }
+    }
     #endregion
 
 
     void UpdateMovement()
     {
+        if (isPushingCart) { return; }
         // Find "forward", relative to camera
-        Vector3 forward = cameras[currentCamera].transform.forward; //NOTE: Could be cached every time camera changes
-        Vector3 right = cameras[currentCamera].transform.right; //NOTE: Could be cached every time camera changes
+        Vector3 forward = camera.transform.forward;
+        Vector3 right = camera.transform.right;
 
         // Project across horizontal plane (y = 0)
         forward.y = 0f;
@@ -71,42 +82,33 @@ public class PlayerController : MonoBehaviour
         right.Normalize();
 
         //this is the direction in the world space we want to move:
-        Vector3 direction = forward * movement.y * MOVESPEED + right * movement.x * MOVESPEED;
+        Vector3 direction = forward * movement.y + right * movement.x;
+
 
         //now we can apply the movement:
-        transform.Translate(direction * 1.0f * Time.deltaTime);
+        transform.Translate(direction * MOVESPEED * Time.deltaTime);
 
-        //dumb hacky rotation
-        model.transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(direction.normalized), 2.2f); 
+
+        if (direction != Vector3.zero)
+        {
+            model.transform.rotation = Quaternion.LookRotation(direction.normalized);
+        }
 
         anim.SetBool("isWalking", movement != Vector2.zero);
     }
 
-    void ValidateCameraSelection()
+    public void ToggleMovementControls(bool active)
     {
-        //Wrap-around cameras (n-1, n <-> 0, 1)
-        if (currentCamera < 0)
-            currentCamera = cameras.Length - 1; 
-        if (currentCamera >= cameras.Length)
-            currentCamera = 0; 
+        if (active)
+            controls.Player.MovementDigital.performed += ctx => movement = ctx.ReadValue<Vector2>();
+        else
+            controls.Player.MovementAnalog.performed -= ctx => movement = ctx.ReadValue<Vector2>();
     }
 
-    #region Initialisers
-    void InitialiseControls()
+    // Runs every time we hear from a device
+    // Yes it's a dumb solution, but it's a start.
+    void DeviceUpdate(InputDevice device)
     {
-        controls = new InputMaster();
-        controls.Player.SwitchCamera.performed += ctx => SwitchCamera(currentCamera + (int)ctx.ReadValue<float>());
-        controls.Player.Movement.performed += ctx => movement = ctx.ReadValue<Vector2>();
+        OnDeviceUpdate?.Invoke(device);
     }
-
-    // Make sure player has a list of cameras to switch through
-    void InitialiseCameras()
-    {
-        if (cameras == null || cameras.Length <= 0)
-        {
-            //Terribly inefficient, only runs if something goes wrong
-            cameras = GameObject.Find("/CCTV").GetComponentsInChildren<Camera>();
-        }
-    }
-    #endregion
 }
