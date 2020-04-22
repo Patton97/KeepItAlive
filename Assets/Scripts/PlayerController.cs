@@ -120,28 +120,6 @@ public class PlayerController : MonoBehaviour
     // ********************************************************************************
     // Input callbacks ****************************************************************
     // ********************************************************************************
-    void MovementDigital_performed(InputAction.CallbackContext ctx)
-    {
-        SetMovement(ctx.ReadValue<Vector2>());
-
-        // Unity's deadzone sends an empty vector, rather than not sending anything
-        if (ctx.ReadValue<Vector2>() != Vector2.zero)
-        {
-            DeviceUpdate(ctx.control.device);
-        }
-    }
-
-    void MovementAnalog_performed(InputAction.CallbackContext ctx)
-    {
-        SetMovement(ctx.ReadValue<Vector2>());
-        
-        // Unity's deadzone sends an empty vector, rather than not sending anything
-        if (ctx.ReadValue<Vector2>() != Vector2.zero)
-        {            
-            DeviceUpdate(ctx.control.device);
-        }
-    }
-
     void Movement_performed(InputAction.CallbackContext ctx)
     {
         SetMovement(ctx.ReadValue<Vector2>());
