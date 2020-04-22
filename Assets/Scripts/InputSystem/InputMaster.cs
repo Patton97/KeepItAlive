@@ -19,18 +19,10 @@ public class @InputMaster : IInputActionCollection, IDisposable
             ""id"": ""9d426832-a74e-4fec-b466-c3d9ae7f0f28"",
             ""actions"": [
                 {
-                    ""name"": ""Movement (Digital)"",
+                    ""name"": ""Movement"",
                     ""type"": ""PassThrough"",
                     ""id"": ""cfc62854-ebac-4765-b962-bd0f5066c340"",
-                    ""expectedControlType"": ""Dpad"",
-                    ""processors"": """",
-                    ""interactions"": """"
-                },
-                {
-                    ""name"": ""Movement (Analog)"",
-                    ""type"": ""PassThrough"",
-                    ""id"": ""cc13d4fb-3037-4e3f-b05b-24a7bab040f8"",
-                    ""expectedControlType"": ""Stick"",
+                    ""expectedControlType"": ""Vector2"",
                     ""processors"": ""StickDeadzone"",
                     ""interactions"": """"
                 },
@@ -60,17 +52,6 @@ public class @InputMaster : IInputActionCollection, IDisposable
                 }
             ],
             ""bindings"": [
-                {
-                    ""name"": """",
-                    ""id"": ""d26478d7-67f9-46b4-a9be-f4c25746ea16"",
-                    ""path"": ""<Gamepad>/leftStick"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Movement (Analog)"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
                 {
                     ""name"": """",
                     ""id"": ""825c7b4e-5a19-4c0e-875b-d98931ad89cc"",
@@ -144,7 +125,7 @@ public class @InputMaster : IInputActionCollection, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Movement (Digital)"",
+                    ""action"": ""Movement"",
                     ""isComposite"": true,
                     ""isPartOfComposite"": false
                 },
@@ -155,7 +136,7 @@ public class @InputMaster : IInputActionCollection, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Movement (Digital)"",
+                    ""action"": ""Movement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
@@ -166,7 +147,7 @@ public class @InputMaster : IInputActionCollection, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Movement (Digital)"",
+                    ""action"": ""Movement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
@@ -177,7 +158,7 @@ public class @InputMaster : IInputActionCollection, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Movement (Digital)"",
+                    ""action"": ""Movement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
@@ -188,9 +169,20 @@ public class @InputMaster : IInputActionCollection, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Movement (Digital)"",
+                    ""action"": ""Movement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4ff9d1a2-e29d-4d24-9350-9f2ad6bf50b6"",
+                    ""path"": ""<Gamepad>/leftStick"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 },
                 {
                     ""name"": ""Keyboard (QE)"",
@@ -355,8 +347,7 @@ public class @InputMaster : IInputActionCollection, IDisposable
 }");
         // Player
         m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
-        m_Player_MovementDigital = m_Player.FindAction("Movement (Digital)", throwIfNotFound: true);
-        m_Player_MovementAnalog = m_Player.FindAction("Movement (Analog)", throwIfNotFound: true);
+        m_Player_Movement = m_Player.FindAction("Movement", throwIfNotFound: true);
         m_Player_InteractionItem = m_Player.FindAction("Interaction (Item)", throwIfNotFound: true);
         m_Player_InteractionVehicle = m_Player.FindAction("Interaction (Vehicle)", throwIfNotFound: true);
         m_Player_Camera = m_Player.FindAction("Camera", throwIfNotFound: true);
@@ -413,8 +404,7 @@ public class @InputMaster : IInputActionCollection, IDisposable
     // Player
     private readonly InputActionMap m_Player;
     private IPlayerActions m_PlayerActionsCallbackInterface;
-    private readonly InputAction m_Player_MovementDigital;
-    private readonly InputAction m_Player_MovementAnalog;
+    private readonly InputAction m_Player_Movement;
     private readonly InputAction m_Player_InteractionItem;
     private readonly InputAction m_Player_InteractionVehicle;
     private readonly InputAction m_Player_Camera;
@@ -422,8 +412,7 @@ public class @InputMaster : IInputActionCollection, IDisposable
     {
         private @InputMaster m_Wrapper;
         public PlayerActions(@InputMaster wrapper) { m_Wrapper = wrapper; }
-        public InputAction @MovementDigital => m_Wrapper.m_Player_MovementDigital;
-        public InputAction @MovementAnalog => m_Wrapper.m_Player_MovementAnalog;
+        public InputAction @Movement => m_Wrapper.m_Player_Movement;
         public InputAction @InteractionItem => m_Wrapper.m_Player_InteractionItem;
         public InputAction @InteractionVehicle => m_Wrapper.m_Player_InteractionVehicle;
         public InputAction @Camera => m_Wrapper.m_Player_Camera;
@@ -436,12 +425,9 @@ public class @InputMaster : IInputActionCollection, IDisposable
         {
             if (m_Wrapper.m_PlayerActionsCallbackInterface != null)
             {
-                @MovementDigital.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMovementDigital;
-                @MovementDigital.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMovementDigital;
-                @MovementDigital.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMovementDigital;
-                @MovementAnalog.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMovementAnalog;
-                @MovementAnalog.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMovementAnalog;
-                @MovementAnalog.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMovementAnalog;
+                @Movement.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMovement;
+                @Movement.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMovement;
+                @Movement.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMovement;
                 @InteractionItem.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteractionItem;
                 @InteractionItem.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteractionItem;
                 @InteractionItem.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteractionItem;
@@ -455,12 +441,9 @@ public class @InputMaster : IInputActionCollection, IDisposable
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
             {
-                @MovementDigital.started += instance.OnMovementDigital;
-                @MovementDigital.performed += instance.OnMovementDigital;
-                @MovementDigital.canceled += instance.OnMovementDigital;
-                @MovementAnalog.started += instance.OnMovementAnalog;
-                @MovementAnalog.performed += instance.OnMovementAnalog;
-                @MovementAnalog.canceled += instance.OnMovementAnalog;
+                @Movement.started += instance.OnMovement;
+                @Movement.performed += instance.OnMovement;
+                @Movement.canceled += instance.OnMovement;
                 @InteractionItem.started += instance.OnInteractionItem;
                 @InteractionItem.performed += instance.OnInteractionItem;
                 @InteractionItem.canceled += instance.OnInteractionItem;
@@ -517,8 +500,7 @@ public class @InputMaster : IInputActionCollection, IDisposable
     public DollycartActions @Dollycart => new DollycartActions(this);
     public interface IPlayerActions
     {
-        void OnMovementDigital(InputAction.CallbackContext context);
-        void OnMovementAnalog(InputAction.CallbackContext context);
+        void OnMovement(InputAction.CallbackContext context);
         void OnInteractionItem(InputAction.CallbackContext context);
         void OnInteractionVehicle(InputAction.CallbackContext context);
         void OnCamera(InputAction.CallbackContext context);

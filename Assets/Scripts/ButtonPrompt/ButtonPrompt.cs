@@ -115,4 +115,10 @@ public class ButtonPrompt : MonoBehaviour
         else
             player.OnDeviceUpdate -= ctx => ChangeDevice(ctx.device);
     }
+
+    void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, .25f);
+    }
 }

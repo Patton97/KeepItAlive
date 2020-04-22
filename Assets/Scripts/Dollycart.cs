@@ -80,6 +80,8 @@ public class Dollycart : MonoBehaviour
         this.EnableMovementControls();
         Debug.Log("CART ON");
         isPlayerPushing = true;
+        //Attach player to cart
+        player.transform.SetParent(transform);
     }
 
     void StopPushing()
@@ -87,16 +89,18 @@ public class Dollycart : MonoBehaviour
         this.DisableMovementControls();
         player.ToggleMovementControls(true);
         Debug.Log("CART OFF");
-        isPlayerPushing = false;        
+        isPlayerPushing = false;
+        //Detach player from cart
+        player.transform.SetParent(null);
     }
 
     void UpdateMovement()
     {
-        if (isPlayerPushing) { return; }
+        if (!isPlayerPushing) { return; }
         if (Mathf.Abs(movement.x) > 0.75)
             transform.Rotate(Vector3.up, movement.x * TURNSPEED);
 
-        transform.Translate(0, 0, movement.y * MOVESPEED * Time.deltaTime);        
+        transform.Translate(0, 0, movement.y * MOVESPEED * Time.deltaTime);
     }
 
     void PlayerIsNear(bool isPlayerNear)

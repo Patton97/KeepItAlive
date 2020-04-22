@@ -12,7 +12,6 @@ public class PlayerController : MonoBehaviour
     const float ROTSPEED = 0;
     Camera camera;
     CameraController cameraController;
-    bool isPushingCart;
     public event System.Action<InputDevice> OnDeviceUpdate;
     public event System.Action OnInteract;
 
@@ -54,8 +53,7 @@ public class PlayerController : MonoBehaviour
     void InitialiseControls()
     {
         controls = new InputMaster();
-        controls.Player.MovementDigital.performed += MovementDigital_performed;
-        controls.Player.MovementAnalog.performed += MovementAnalog_performed;
+        controls.Player.Movement.performed += Movement_performed;
         controls.Player.Camera.performed += ctx => cameraController.Rotate(ctx.ReadValue<float>());
         controls.Player.InteractionVehicle.started += _ => Interact();
     }    
@@ -67,10 +65,8 @@ public class PlayerController : MonoBehaviour
     }
     #endregion
 
-
     void UpdateMovement()
     {
-        if (isPushingCart) { return; }
         // Find "forward", relative to camera
         Vector3 forward = camera.transform.forward;
         Vector3 right = camera.transform.right;
@@ -103,11 +99,16 @@ public class PlayerController : MonoBehaviour
     }
 
     public void ToggleMovementControls(bool active)
-    {
+    {        
         if (active)
-            controls.Player.MovementDigital.performed += MovementAnalog_performed;
+        {
+            controls.Player.Movement.performed += Movement_performed;
+        }            
         else
-            controls.Player.MovementAnalog.performed -= MovementAnalog_performed;
+        {
+            controls.Player.Movement.performed -= Movement_performed;
+            SetMovement(Vector2.zero);
+        }
     }
 
     void Interact() => OnInteract?.Invoke();
@@ -137,6 +138,17 @@ public class PlayerController : MonoBehaviour
         // Unity's deadzone sends an empty vector, rather than not sending anything
         if (ctx.ReadValue<Vector2>() != Vector2.zero)
         {            
+            DeviceUpdate(ctx.control.device);
+        }
+    }
+
+    void Movement_performed(InputAction.CallbackContext ctx)
+    {
+        SetMovement(ctx.ReadValue<Vector2>());
+
+        // Unity's deadzone sends an empty vector, rather than not sending anything
+        if (ctx.ReadValue<Vector2>() != Vector2.zero)
+        {
             DeviceUpdate(ctx.control.device);
         }
     }

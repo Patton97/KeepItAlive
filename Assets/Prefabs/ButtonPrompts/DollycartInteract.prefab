@@ -44,14 +44,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: acfef7285ce1aa247935270ab832e92a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prompt_KBM: {fileID: -927199367670048503, guid: 7f83f1a88b32cda4da6297fd4e29cc7f,
-    type: 3}
-  prompt_DS4: {fileID: -927199367670048503, guid: e9ea2b8d5e8539444b96d662f48b3523,
-    type: 3}
-  prompt_XB1: {fileID: 0}
+  prompt_KBM: 0
+  prompt_PS: 0
+  prompt_XB: 0
   camera: {fileID: 0}
   TURNSPEED: 2.5
   PULSESPEED: 0.75
+  promptOffset: {x: 0, y: 2, z: 0}
 --- !u!65 &8695096145090268668
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -63,5 +62,5 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 1, y: 2, z: 1}
+  m_Center: {x: 0, y: 1, z: 0}
