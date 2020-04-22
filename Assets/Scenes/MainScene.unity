@@ -253,7 +253,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 622556668}
   offset: {x: 0, y: 10, z: -10}
-  CAMSPEED: 1
+  CAMSPEED: 0.5
 --- !u!1 &274544332
 GameObject:
   m_ObjectHideFlags: 0
@@ -1228,6 +1228,58 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!1 &1973606255
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1973606257}
+  - component: {fileID: 1973606256}
+  m_Layer: 0
+  m_Name: ButtonPrompts
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1973606256
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1973606255}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 201de00cfb6389541ac2ed84446d61f3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  KBM_F: {fileID: -927199367670048503, guid: 7f83f1a88b32cda4da6297fd4e29cc7f, type: 3}
+  PS_Triangle: {fileID: -927199367670048503, guid: e9ea2b8d5e8539444b96d662f48b3523,
+    type: 3}
+  PS_Square: {fileID: -927199367670048503, guid: 2eecb64dc9e8ce14db35351976769c81,
+    type: 3}
+  PS_Circle: {fileID: -927199367670048503, guid: b4cd71120174ac64c84636c9b19b68ad,
+    type: 3}
+  PS_Cross: {fileID: -927199367670048503, guid: c35b44a34a7ccf343867fb2c1f792044,
+    type: 3}
+--- !u!4 &1973606257
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1973606255}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 9
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &4729165622111616002
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1417,9 +1469,18 @@ PrefabInstance:
     - target: {fileID: 2269459712205771020, guid: dbf7cd50d4e9861459862e0488dbb4e4,
         type: 3}
       propertyPath: prompt_KBM
-      value: 
-      objectReference: {fileID: -927199367670048503, guid: 7f83f1a88b32cda4da6297fd4e29cc7f,
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2269459712205771020, guid: dbf7cd50d4e9861459862e0488dbb4e4,
         type: 3}
+      propertyPath: prompt_PS
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2269459712205771020, guid: dbf7cd50d4e9861459862e0488dbb4e4,
+        type: 3}
+      propertyPath: prompt_XB
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2812360820439517428, guid: dbf7cd50d4e9861459862e0488dbb4e4,
         type: 3}
       propertyPath: m_IsTrigger

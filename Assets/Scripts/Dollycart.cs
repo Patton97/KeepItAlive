@@ -19,7 +19,6 @@ public class Dollycart : MonoBehaviour
     void Awake()
     {
         controls = new InputMaster();
-        controls.Dollycart.Interact.performed += _ => Interact();//Move to playercontroller?
         player = FindObjectOfType<PlayerController>();
         if(prompt == null) { prompt = GetComponentInChildren<ButtonPrompt>(); }
     }
@@ -48,18 +47,26 @@ public class Dollycart : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        isPlayerNear = other.GetComponent<PlayerController>();
-        prompt.SetActive(true);
+        //Ignore if player already registered as near
+        if (isPlayerNear) { return; }
+        //Ignore if collider is not attached to player
+        if (!other.GetComponent<PlayerController>()) { return; }
+
+        PlayerIsNear(true);
     }
 
     void OnTriggerExit(Collider other)
     {
-        isPlayerNear = !other.GetComponent<PlayerController>();
-        prompt.SetActive(false);
+        //Ignore if player not registered as near
+        if (!isPlayerNear) { return; }
+        //Ignore if collider is not attached to player
+        if (!other.GetComponent<PlayerController>()) { return; }
+
+        PlayerIsNear(false);
     }
 
 
-    public void Interact()
+    void Interact()
     {
         if (isPlayerNear && !isPlayerPushing)
             StartPushing();
@@ -69,28 +76,53 @@ public class Dollycart : MonoBehaviour
 
     void StartPushing()
     {
-        controls.Dollycart.Movement.performed += ctx => movement = ctx.ReadValue<Vector2>();
         player.ToggleMovementControls(false);
-        controls.Dollycart.Movement.Enable();
+        this.EnableMovementControls();
         Debug.Log("CART ON");
         isPlayerPushing = true;
     }
 
     void StopPushing()
     {
-        controls.Dollycart.Movement.performed -= ctx => movement = ctx.ReadValue<Vector2>();
+        this.DisableMovementControls();
         player.ToggleMovementControls(true);
-        controls.Dollycart.Movement.Disable();
         Debug.Log("CART OFF");
         isPlayerPushing = false;        
     }
 
     void UpdateMovement()
     {
-        if(isPlayerPushing) { return; }
+        if (isPlayerPushing) { return; }
         if (Mathf.Abs(movement.x) > 0.75)
             transform.Rotate(Vector3.up, movement.x * TURNSPEED);
 
         transform.Translate(0, 0, movement.y * MOVESPEED * Time.deltaTime);        
+    }
+
+    void PlayerIsNear(bool isPlayerNear)
+    {
+        this.isPlayerNear = isPlayerNear;
+        prompt.SetActive(isPlayerNear);
+
+        if (isPlayerNear)
+            player.OnInteract += Interact;
+        else
+            player.OnInteract -= Interact;
+    }
+
+    void EnableMovementControls()
+    {
+        controls.Dollycart.MovementAnalog.performed += ctx => movement = ctx.ReadValue<Vector2>();
+        controls.Dollycart.MovementDigital.performed += ctx => movement = ctx.ReadValue<Vector2>();
+        controls.Dollycart.MovementAnalog.Enable();
+        controls.Dollycart.MovementDigital.Enable();
+    }
+
+    void DisableMovementControls()
+    {
+        controls.Dollycart.MovementAnalog.performed -= ctx => movement = ctx.ReadValue<Vector2>();
+        controls.Dollycart.MovementDigital.performed -= ctx => movement = ctx.ReadValue<Vector2>();
+        controls.Dollycart.MovementAnalog.Disable();
+        controls.Dollycart.MovementDigital.Disable();
     }
 }

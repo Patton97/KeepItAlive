@@ -14,9 +14,11 @@ public class PlayerController : MonoBehaviour
     CameraController cameraController;
     bool isPushingCart;
     public event System.Action<InputDevice> OnDeviceUpdate;
+    public event System.Action OnInteract;
 
     Vector2 movement = Vector2.zero;
     [SerializeField] GameObject model;
+
 
     // Start is called before the first frame update
     void Awake()
@@ -52,13 +54,11 @@ public class PlayerController : MonoBehaviour
     void InitialiseControls()
     {
         controls = new InputMaster();
-        controls.Player.MovementDigital.performed += ctx => movement = ctx.ReadValue<Vector2>();
-        controls.Player.MovementAnalog.performed += ctx => movement = ctx.ReadValue<Vector2>();
+        controls.Player.MovementDigital.performed += MovementDigital_performed;
+        controls.Player.MovementAnalog.performed += MovementAnalog_performed;
         controls.Player.Camera.performed += ctx => cameraController.Rotate(ctx.ReadValue<float>());
-
-        controls.Player.MovementAnalog.actionMap.actionTriggered += ctx => DeviceUpdate(ctx.control.device);
-    }
-    
+        controls.Player.InteractionVehicle.started += _ => Interact();
+    }    
 
     void InitialiseCamera()
     {
@@ -88,7 +88,7 @@ public class PlayerController : MonoBehaviour
         //now we can apply the movement:
         transform.Translate(direction * MOVESPEED * Time.deltaTime);
 
-
+        //Quartenion.LookRotation rejects true-zero vectors
         if (direction != Vector3.zero)
         {
             model.transform.rotation = Quaternion.LookRotation(direction.normalized);
@@ -96,19 +96,48 @@ public class PlayerController : MonoBehaviour
 
         anim.SetBool("isWalking", movement != Vector2.zero);
     }
+    
+    void SetMovement(Vector2 movement)
+    {
+        this.movement = movement;
+    }
 
     public void ToggleMovementControls(bool active)
     {
         if (active)
-            controls.Player.MovementDigital.performed += ctx => movement = ctx.ReadValue<Vector2>();
+            controls.Player.MovementDigital.performed += MovementAnalog_performed;
         else
-            controls.Player.MovementAnalog.performed -= ctx => movement = ctx.ReadValue<Vector2>();
+            controls.Player.MovementAnalog.performed -= MovementAnalog_performed;
     }
+
+    void Interact() => OnInteract?.Invoke();
 
     // Runs every time we hear from a device
     // Yes it's a dumb solution, but it's a start.
-    void DeviceUpdate(InputDevice device)
+    void DeviceUpdate(InputDevice device) => OnDeviceUpdate?.Invoke(device);
+
+    // ********************************************************************************
+    // Input callbacks ****************************************************************
+    // ********************************************************************************
+    void MovementDigital_performed(InputAction.CallbackContext ctx)
     {
-        OnDeviceUpdate?.Invoke(device);
+        SetMovement(ctx.ReadValue<Vector2>());
+
+        // Unity's deadzone sends an empty vector, rather than not sending anything
+        if (ctx.ReadValue<Vector2>() != Vector2.zero)
+        {
+            DeviceUpdate(ctx.control.device);
+        }
+    }
+
+    void MovementAnalog_performed(InputAction.CallbackContext ctx)
+    {
+        SetMovement(ctx.ReadValue<Vector2>());
+        
+        // Unity's deadzone sends an empty vector, rather than not sending anything
+        if (ctx.ReadValue<Vector2>() != Vector2.zero)
+        {            
+            DeviceUpdate(ctx.control.device);
+        }
     }
 }
